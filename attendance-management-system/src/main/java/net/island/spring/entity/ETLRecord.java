@@ -2,6 +2,8 @@ package net.island.spring.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -10,6 +12,10 @@ import javax.persistence.Table;
 public class ETLRecord {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private long id;
+	
+	@Column(name = "table_name")
 	private String table;
 	
 	@Column(name = "last_etl_time")
@@ -20,6 +26,14 @@ public class ETLRecord {
 	
 	@Column(name = "etl_result")
 	private String etlResult;
+	
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
 
 	public String getTable() {
 		return table;

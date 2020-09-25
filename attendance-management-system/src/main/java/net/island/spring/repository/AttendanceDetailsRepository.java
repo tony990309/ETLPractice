@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import net.island.spring.entity.AttendanceDetails;
 
 @Repository
-public interface AttendanceDetailsRepository extends JpaRepository<AttendanceDetails, String> {
+public interface AttendanceDetailsRepository extends JpaRepository<AttendanceDetails, Long> {
 	
 }

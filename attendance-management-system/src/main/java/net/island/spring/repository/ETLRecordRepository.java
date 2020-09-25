@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import net.island.spring.entity.ETLRecord;
 
 @Repository
-public interface ETLRecordRepository extends JpaRepository<ETLRecord, String> {
+public interface ETLRecordRepository extends JpaRepository<ETLRecord, Long> {
 
 }

@@ -149,7 +149,7 @@ public class AttendanceDetailsService {
 		AttendanceDetails result = new AttendanceDetails();
 		
 		if (source.size() > 0) {
-			result.setId(source.get(0).getEmployeeId());
+			result.setEmployeeId(source.get(0).getEmployeeId());
 			result.setName(source.get(0).getName());
 			result.setDate(source.get(0).getDate());
 			
