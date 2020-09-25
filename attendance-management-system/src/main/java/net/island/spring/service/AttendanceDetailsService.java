@@ -38,7 +38,13 @@ public class AttendanceDetailsService {
 	private ETLRecordRepository etlRecordRepository;
 	
  	public List<AttendanceDetails> excuteDetailETL() throws ParseException {
-		List<PunchRecord> punchRecordList = getPunchRecords("2020/8/4 18:00");
+ 		
+ 		String startDate = getLastETLRecord();
+ 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		Date now = new Date();
+		String endDate = sdf.format(now);
+ 		
+		List<PunchRecord> punchRecordList = getPunchRecords(startDate, endDate);
 		List<String> employeeIdList = getEmployeeIdList(punchRecordList);
 		List<String> dateList = getDateList(punchRecordList.get(0).getDate(), punchRecordList.get(punchRecordList.size()-1).getDate());
 		List<AttendanceDetails> attendanceDetailsList = new ArrayList<>();
@@ -73,7 +79,11 @@ public class AttendanceDetailsService {
 		return attendanceDetailsList;
 	}
 
-	@Transactional
+	private String getLastETLRecord() {
+		return etlRecordRepository.findLast();
+	}
+
+	@Transactional(rollbackFor=Exception.class)
 	public void saveDetails(List<AttendanceDetails> data, PunchRecord punchRecord) {
 		ETLRecord etlRecord = new ETLRecord();
 		etlRecord.setTable("attendance_details");
@@ -165,8 +175,8 @@ public class AttendanceDetailsService {
 		return result;
 	}
 
-	private List<PunchRecord> getPunchRecords(String time) {
-		return punchRepository.findByTransactionTime(time);
+	private List<PunchRecord> getPunchRecords(String start, String end) {
+		return punchRepository.findByTransactionTime(start, end);
 	}
 	
 	private List<String> getEmployeeIdList(List<PunchRecord> source) {
