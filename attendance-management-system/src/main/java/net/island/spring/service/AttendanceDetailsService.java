@@ -83,23 +83,27 @@ public class AttendanceDetailsService {
 		return etlRecordRepository.findLast();
 	}
 
-	@Transactional(rollbackFor=Exception.class)
+	//@Transactional(rollbackFor=Exception.class)
+	@Transactional
 	public void saveDetails(List<AttendanceDetails> data, PunchRecord punchRecord) {
 		ETLRecord etlRecord = new ETLRecord();
 		etlRecord.setTable("attendance_details");
 		
-		for (AttendanceDetails d:data) {
-			attendanceDetailsRepository.save(d);
-		}
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date now = new Date();
 		etlRecord.setLastETLTime(sdf.format(now));
-		
 		etlRecord.setLastTransactionTime(punchRecord.getTransactionTime());
-		etlRecord.setEtlResult("success");
 		
-		etlRecordRepository.save(etlRecord);
+		try {
+			for (AttendanceDetails d:data) {
+				attendanceDetailsRepository.save(d);
+			}
+			etlRecord.setEtlResult("success");
+		} catch (Exception e) {
+			etlRecord.setEtlResult("fail");
+		} finally {
+			etlRecordRepository.save(etlRecord);
+		}
 	}
 	
 	private AttendanceDetails countHours(List<Attendance> source) {
